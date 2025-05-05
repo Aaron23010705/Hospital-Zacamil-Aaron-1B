@@ -3,8 +3,8 @@ import bcrypt from "bcryptjs"; //encriptar
 import nodemailer from "nodemailer"; //enviar correo
 import crypto from "crypto"; // código aleatorio
 
-import DoctorModel from "../../models/Doctor.js"
-import { config } from "../../config.js"; //config se pone en llave por que hay dos formas de exportar, cuando la exportamos por default que se puede exportar de cualquier manera y
+import DoctorModel from "../models/Doctor.js"
+import { config } from "../config.js"; //config se pone en llave por que hay dos formas de exportar, cuando la exportamos por default que se puede exportar de cualquier manera y
 // por constante, que en el caso de config es por constante y se tiene que mandar a llamar tal contaste
 
 //Creamos un array de funciones
@@ -116,16 +116,17 @@ if(verificationCode !== storedCode){
     return res.json ({message: "Invalid code"})
 
 }
+else {
 
 //Cambiamos el estado de "isVerified" a true
-const   Patient = await patientsModel.findOne({email});
-Patient.isVerified = true;
-    await Patient.save()
+const   Doctor = await DoctorModel.findOne({email});
+Doctor.isVerified = true;
+    await Doctor.save()
     res.json({message: "Email verified"});
 
     //Se quita la cookie con el token
     res.clearCookie("VerificationToken");
-
+}
 }
 catch(error) {
 res.json ({message: "error"})

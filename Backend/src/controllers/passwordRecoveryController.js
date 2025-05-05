@@ -1,10 +1,9 @@
 import jsonwebToken, { decode } from "jsonwebtoken" // token 
 import bcrypt from "bcryptjs" //Encriptar contraseña
 
-import clientsModel from "../models/Clients.js";
-import employeeModel from "../models/Employees.js";
-import { sendEmail, HTMLRecoveryEmail } from "../../utils/mailPasswordRecovery.js";
-import { config } from "../../config.js";
+import DoctorModel from "../models/Doctor.js";
+import { sendEmail, HTMLRecoveryEmail } from "../utils/mailPasswordRecovery.js";
+import { config } from "../config.js";
 
 
 //1- Crear un array de funciones
@@ -18,15 +17,12 @@ passwordRecoveryController.requestCode = async (req,res) => {
         let userFound;
         let userType;
 
-        userFound = await clientsModel.findOne({email})
+        userFound = await DoctorModel.findOne({email})
 if(userFound) {
-    userType = "client"
+    userType = "Doctor"
 } else {
-    userFound = await employeeModel.findOne({email});
-    userType = "Employee"
-}
-if(!userFound){
     return res.json ({message: "User not found}"})
+
 }
     
 //Generar un código de 6 digitos
@@ -121,17 +117,11 @@ const hashedPassword = await bcrypt.hash(newPassword,10)
 //Guardamos la nueva contraseña en la base de datos
 
 if( decoded.userType == "client"){
-    user = await clientsModel.findOneAndUpdate(
+    user = await DoctorModel.findOneAndUpdate(
         {email},
         {password:hashedPassword},
         {new: true}
     )
-} else if (decoded.userType ="employee"){
-    user = await employeeModel.findOneAndUpdate(
-        {email},
-        {password: hashedPassword},
-        {new:true}
-        )
 }
 res.clearCookie("tokenRecoveryCode") 
 res.json ({message:"Password updated"})

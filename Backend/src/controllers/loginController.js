@@ -4,11 +4,10 @@ SE IMPORTAN TAMBIÉN LAS LIBRERIAS BYCRIPT, JSONWEBTOKEN Y el archivo config
 
 */
 
-import PatientModel from "../models/Patient.js"
-import DoctorModel from "../../models/Doctor.js"
+import DoctorModel from "../models/Doctor.js"
 import bcrypt from "bcryptjs"
 import jswonwebtoken from "jsonwebtoken"
-import {config} from "../../config.js"
+import {config} from "../config.js"
 
 const loginController = {};
 
@@ -39,13 +38,6 @@ loginController.login = async (req,res) => {
         userType = "Doctor";
 
              //3- Cliente
-
-        if (!userFound){
-
-            userFound = await PatientModel.findOne({email})
-            userType ="Patient";
-
-        }
      }
 
      if(!userFound){
